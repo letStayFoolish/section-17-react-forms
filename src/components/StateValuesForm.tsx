@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Input from "./Input.tsx";
+import { isEmail, isNotEmpty } from "../util/validation.ts";
 
 type TFormValues = {
   email: string;
@@ -22,7 +23,11 @@ const Login: React.FC = () => {
   });
 
   // Validation
-  const isEmailInvalid = isFocus.email && !enteredValues.email.includes("@");
+  // const isEmailInvalid = isFocus.email && !enteredValues.email.includes("@");
+  const isEmailInvalid =
+    isFocus.email &&
+    (!isEmail(enteredValues.email) || !isNotEmpty(enteredValues.email));
+
   const isPasswordInvalid =
     isFocus.password && enteredValues.password.trim().length < 6;
 
@@ -74,7 +79,7 @@ const Login: React.FC = () => {
           value={enteredValues.email}
           onBlur={() => handleInputBlur("email")}
           onChange={handleInputChange}
-          error={isEmailInvalid && "Please enter an valid email address."}
+          error={isEmailInvalid ? "Please enter an valid email address." : ""}
         />
 
         <Input
@@ -83,8 +88,9 @@ const Login: React.FC = () => {
           name="password"
           type="password"
           error={
-            isPasswordInvalid &&
-            "Please enter a password of at least 6 characters"
+            isPasswordInvalid
+              ? "Please enter a password of at least 6 characters"
+              : ""
           }
           value={enteredValues.password}
           onBlur={() => handleInputBlur("password")}

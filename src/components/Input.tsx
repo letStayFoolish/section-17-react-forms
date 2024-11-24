@@ -3,7 +3,7 @@ import React, { InputHTMLAttributes } from "react";
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   id: string;
-  error: boolean | string;
+  error: string;
 };
 
 const Input: React.FC<Props> = ({ label, id, error, ...props }) => {
@@ -11,7 +11,11 @@ const Input: React.FC<Props> = ({ label, id, error, ...props }) => {
     <div className="control no-margin">
       <label htmlFor={id}>{label}</label>
       <input id={id} {...props} />
-      <div className="control-error">{error && <p>{error}</p>}</div>
+      {error && (
+        <div className="control-error">
+          <p>{error}</p>
+        </div>
+      )}
     </div>
   );
 };

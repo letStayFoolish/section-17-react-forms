@@ -1,6 +1,7 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 
 const Signup: React.FC = () => {
+  const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
@@ -11,6 +12,13 @@ const Signup: React.FC = () => {
 
     const data = Object.fromEntries(fd.entries()); // fd.entries() will give us kind an array of all input fields and their values, and calling Object.fromEntries, static method, on array will give us object, where we have key-value pairs for all our input fields
     data.acquisition = acquisitionChannel;
+
+    if (data.passwird !== data["confirm-password"]) {
+      setPasswordsAreNotEqual(true);
+      return;
+    }
+
+    setPasswordsAreNotEqual(false);
 
     console.log({ data });
 
@@ -32,6 +40,11 @@ const Signup: React.FC = () => {
         <div className="control">
           <label htmlFor="password">Password</label>
           <input id="password" type="password" name="password" />
+          {passwordsAreNotEqual && (
+            <div className="control-error">
+              <p>Passwords should be matching</p>
+            </div>
+          )}
         </div>
 
         <div className="control">
@@ -41,6 +54,11 @@ const Signup: React.FC = () => {
             type="password"
             name="confirm-password"
           />
+          {passwordsAreNotEqual && (
+            <div className="control-error">
+              <p>Passwords should be matching</p>
+            </div>
+          )}
         </div>
       </div>
 

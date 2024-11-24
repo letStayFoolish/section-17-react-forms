@@ -26,6 +26,11 @@ const Login: React.FC = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // It is always good to have some validation on submission...
+    if (isEmailInvalid) return;
+
+    console.log("Sending HTTP request...");
+
     console.log(
       "User Email: " + enteredValues.email,
       "Password: " + enteredValues.password,

@@ -5,6 +5,10 @@ type TFormValues = {
   password: string;
 };
 
+/**
+ * If we want to do validation on every keystroke, we need stateful form
+ * @constructor
+ */
 const Login: React.FC = () => {
   // const [email, setEmail] = useState("");
   // const [password, setPassword] = useState("");
@@ -12,6 +16,10 @@ const Login: React.FC = () => {
     email: "",
     password: "",
   });
+
+  // Validation
+  const isEmailInvalid =
+    enteredValues.email !== "" && !enteredValues.email.includes("@");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,6 +57,11 @@ const Login: React.FC = () => {
             onChange={handleInputChange}
             value={enteredValues.email}
           />
+          {isEmailInvalid && (
+            <div className="control-error">
+              <p>Please enter valid email</p>
+            </div>
+          )}
         </div>
 
         <div className="control no-margin">

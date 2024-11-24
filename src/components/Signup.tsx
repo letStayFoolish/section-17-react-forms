@@ -13,6 +13,9 @@ const Signup: React.FC = () => {
     data.acquisition = acquisitionChannel;
 
     console.log({ data });
+
+    // Reset Form programmatically
+    // event.target.reset();
   };
 
   return (

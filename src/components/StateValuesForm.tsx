@@ -10,16 +10,18 @@ type TFormValues = {
  * @constructor
  */
 const Login: React.FC = () => {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const [enteredValues, setEnteredValues] = useState<TFormValues>({
     email: "",
     password: "",
   });
 
+  const [isFocus, setIsFocus] = useState({
+    email: false,
+    password: false,
+  });
+
   // Validation
-  const isEmailInvalid =
-    enteredValues.email !== "" && !enteredValues.email.includes("@");
+  const isEmailInvalid = isFocus.email && !enteredValues.email.includes("@");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,9 +32,12 @@ const Login: React.FC = () => {
     );
   };
 
-  // const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
-  //   setEmail(event.target.value);
-  // };
+  const handleInputBlur = (identifier: string) => {
+    setIsFocus((prevValue) => ({
+      ...prevValue,
+      [identifier]: true,
+    }));
+  };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEnteredValues((prevValues) => {
@@ -41,6 +46,11 @@ const Login: React.FC = () => {
         [event.target.name]: event.target.value,
       };
     });
+
+    setIsFocus((prevState) => ({
+      ...prevState,
+      [event.target.name]: false,
+    }));
   };
 
   return (
@@ -54,6 +64,7 @@ const Login: React.FC = () => {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleInputBlur("email")}
             onChange={handleInputChange}
             value={enteredValues.email}
           />
@@ -70,6 +81,7 @@ const Login: React.FC = () => {
             id="password"
             type="password"
             name="password"
+            onBlur={() => handleInputBlur("password")}
             onChange={handleInputChange}
             value={enteredValues.password}
           />

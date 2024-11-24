@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import Input from "./Input.tsx";
 
 type TFormValues = {
   email: string;
@@ -22,12 +23,14 @@ const Login: React.FC = () => {
 
   // Validation
   const isEmailInvalid = isFocus.email && !enteredValues.email.includes("@");
+  const isPasswordInvalid =
+    isFocus.password && enteredValues.password.trim().length < 6;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // It is always good to have some validation on submission...
-    if (isEmailInvalid) return;
+    // It is always good to have some validation on submission
+    if (isEmailInvalid && isPasswordInvalid) return;
 
     console.log("Sending HTTP request...");
 
@@ -63,34 +66,30 @@ const Login: React.FC = () => {
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            onBlur={() => handleInputBlur("email")}
-            onChange={handleInputChange}
-            value={enteredValues.email}
-          />
-          {isEmailInvalid && (
-            <div className="control-error">
-              <p>Please enter valid email</p>
-            </div>
-          )}
-        </div>
+        <Input
+          label="Email"
+          id="email"
+          name="email"
+          type="email"
+          value={enteredValues.email}
+          onBlur={() => handleInputBlur("email")}
+          onChange={handleInputChange}
+          error={isEmailInvalid && "Please enter an valid email address."}
+        />
 
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            onBlur={() => handleInputBlur("password")}
-            onChange={handleInputChange}
-            value={enteredValues.password}
-          />
-        </div>
+        <Input
+          label="Password"
+          id="password"
+          name="password"
+          type="password"
+          error={
+            isPasswordInvalid &&
+            "Please enter a password of at least 6 characters"
+          }
+          value={enteredValues.password}
+          onBlur={() => handleInputBlur("password")}
+          onChange={handleInputChange}
+        />
       </div>
 
       <p className="form-actions">

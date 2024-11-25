@@ -1,69 +1,33 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent } from "react";
 import Input from "./Input.tsx";
-import { isEmail, isNotEmpty } from "../util/validation.ts";
-
-type TFormValues = {
-  email: string;
-  password: string;
-};
+import useInput from "../hook/useInput.ts";
+import { hasMinLength, isEmail, isNotEmpty } from "../util/validation.ts";
 
 /**
  * If we want to do validation on every keystroke, we need stateful form
- * @constructor
  */
 const Login: React.FC = () => {
-  const [enteredValues, setEnteredValues] = useState<TFormValues>({
-    email: "",
-    password: "",
-  });
+  const {
+    value: emailEntered,
+    handleInputChange: handleEmailChange,
+    handleInputBlur: handleEmailBlur,
+    hasError: isEmailInvalid,
+  } = useInput("", (value: string) => isNotEmpty(value) && isEmail(value));
 
-  const [isFocus, setIsFocus] = useState({
-    email: false,
-    password: false,
-  });
-
-  // Validation
-  // const isEmailInvalid = isFocus.email && !enteredValues.email.includes("@");
-  const isEmailInvalid =
-    isFocus.email &&
-    (!isEmail(enteredValues.email) || !isNotEmpty(enteredValues.email));
-
-  const isPasswordInvalid =
-    isFocus.password && enteredValues.password.trim().length < 6;
+  const {
+    value: passwordEntered,
+    handleInputChange: handlePasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError: isPasswordInvalid,
+  } = useInput("", (value: string) => hasMinLength(value, 6));
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // It is always good to have some validation on submission
-    if (isEmailInvalid && isPasswordInvalid) return;
+    if (isEmailInvalid || isPasswordInvalid) return;
 
     console.log("Sending HTTP request...");
-
-    console.log(
-      "User Email: " + enteredValues.email,
-      "Password: " + enteredValues.password,
-    );
-  };
-
-  const handleInputBlur = (identifier: string) => {
-    setIsFocus((prevValue) => ({
-      ...prevValue,
-      [identifier]: true,
-    }));
-  };
-
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setEnteredValues((prevValues) => {
-      return {
-        ...prevValues,
-        [event.target.name]: event.target.value,
-      };
-    });
-
-    setIsFocus((prevState) => ({
-      ...prevState,
-      [event.target.name]: false,
-    }));
   };
 
   return (
@@ -76,9 +40,9 @@ const Login: React.FC = () => {
           id="email"
           name="email"
           type="email"
-          value={enteredValues.email}
-          onBlur={() => handleInputBlur("email")}
-          onChange={handleInputChange}
+          value={emailEntered}
+          onBlur={handleEmailBlur}
+          onChange={handleEmailChange}
           error={isEmailInvalid ? "Please enter an valid email address." : ""}
         />
 
@@ -92,9 +56,9 @@ const Login: React.FC = () => {
               ? "Please enter a password of at least 6 characters"
               : ""
           }
-          value={enteredValues.password}
-          onBlur={() => handleInputBlur("password")}
-          onChange={handleInputChange}
+          value={passwordEntered}
+          onBlur={handlePasswordBlur}
+          onChange={handlePasswordChange}
         />
       </div>
 
